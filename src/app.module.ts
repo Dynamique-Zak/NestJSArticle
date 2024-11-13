@@ -3,9 +3,20 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ArticleModule } from './article/article.module';
 import { CoreModule } from './core/core.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Article } from './article/article.dto';
 
 @Module({
-  imports: [ArticleModule, CoreModule],
+  imports: [ArticleModule, CoreModule, 
+    TypeOrmModule.forRoot({
+      type: 'mongodb',
+      url: 'mongodb://127.0.0.1:27017/db_tp',
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      synchronize: true,
+      entities : [Article],
+    })
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

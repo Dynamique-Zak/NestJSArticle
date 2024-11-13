@@ -2,26 +2,30 @@ import { Injectable } from '@nestjs/common';
 import { ResponseDTO } from 'src/core/response.dto';
 import { Article } from '../article.dto';
 import { HelperService } from 'src/core/helper-service';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class ArticleService {
 
+    public constructor(
+        @InjectRepository(Article) 
+        private readonly repository : Repository<Article> 
+    ) {}
+
     // Articles en mémoire
-    DB_ARTICLES : Article[]  = [
-        { id: 1, title : "Velocipastor", content : "Un film stylé"},
-        { id: 2, title : "Incroyable Bulk", content : "Un film stylé 2"},
-        { id: 3, title : "Sharknado", content : "Un film stylé 3"},
-    ];
+    getAll() : Promise<ResponseDTO<Article[]>> {
 
-    getAll() : ResponseDTO<Article[]>{
-
-        return HelperService.performResponse("200", "La liste des articles a été récupérés avec succès", this.DB_ARTICLES);
+        return this.repository.find().then((data) => {
+            return HelperService.performResponse("200", "La liste des articles a été récupérés avec succès", data);
+        });
     }
 
     getById(id: number) : ResponseDTO<Article> {
 
-        const foundArticle = this.DB_ARTICLES.find((article) => article.id === id);
+        //const foundArticle = this.DB_ARTICLES.find((article) => article.id === id);
 
+        const foundArticle = undefined;
         // Si je trouve pas (si undefined ou null)
         if (!foundArticle){
             return HelperService.performResponse("702", `Impossible de récupérer un article avec l'UID ${id}`, null);
@@ -31,6 +35,7 @@ export class ArticleService {
     }
 
     save(article: Article) : ResponseDTO<Article> {
+        /*
         // Creation ou Edition ?
         // ==========================================================
         // Update
@@ -66,12 +71,13 @@ export class ArticleService {
 
         article.id = this.DB_ARTICLES.length + 1;
         this.DB_ARTICLES.push(article);
-
-        return HelperService.performResponse("200", "Article ajouté avec succès", article);
+        */
+        return HelperService.performResponse("200", "Article ajouté avec succès", undefined);
     }
     
     deleteById(id: number) : ResponseDTO<Article> {
         
+        /*
         // Essayer de trovuer l'index d'un tableau selon un critère de recherche
         const foundArticleIndex = this.DB_ARTICLES.findIndex((article) => article.id === id);
 
@@ -84,7 +90,7 @@ export class ArticleService {
         const articleBeforeDelete = this.DB_ARTICLES[foundArticleIndex];
 
         this.DB_ARTICLES.splice(foundArticleIndex, 1);
-        
-        return HelperService.performResponse("200", `L'article ${id} a été supprimé avec succès`, articleBeforeDelete);
+        */
+        return HelperService.performResponse("200", `L'article ${id} a été supprimé avec succès`, undefined);
     }
 }
