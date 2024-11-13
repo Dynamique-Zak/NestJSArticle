@@ -1,25 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ArticleService } from './article.service';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { Article } from '../article.dto';
+import { ArticleModule } from '../article.module';
 
 describe('ArticleService', () => {
   let service: ArticleService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports : [
-        TypeOrmModule.forRoot({
-          type: 'mongodb',
-          url: 'mongodb://127.0.0.1:27017/db_tp',
-          useNewUrlParser: true,
-          useUnifiedTopology: true,
-          synchronize: true,
-          entities : [Article],
-        }),
-        TypeOrmModule.forFeature([Article])
+      providers: [ArticleService,
+        ArticleModule.articleDAOProvider(true)
       ],
-      providers: [ArticleService],
     }).compile();
 
     service = module.get<ArticleService>(ArticleService);
@@ -45,7 +35,7 @@ describe('ArticleService', () => {
 
     // cas 01 - code 200 
     it('Devrait retourner le code 200', async () => {
-      const result = await service.getById("6734ac55282d21d8b906eb62");
+      const result = await service.getById("1");
 
       expect(result.code).toBe("200");
     })

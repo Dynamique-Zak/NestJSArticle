@@ -1,28 +1,25 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { ResponseDTO } from '../../core/response.dto';
 import { Article } from '../article.dto';
 import { HelperService } from '../../core/helper-service';
-import { Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
-import { ObjectId } from 'mongodb';
+import { IDAOArticle } from '../dao/article.dao.interface';
 
 @Injectable()
 export class ArticleService {
 
     public constructor(
-        @InjectRepository(Article) 
-        private readonly repository : Repository<Article> 
+        @Inject('IDAOArticle') private readonly articleDAO: IDAOArticle
     ) {}
 
     getAll() : Promise<ResponseDTO<Article[]>> {
-        return this.repository.find().then((data) => {
+        return this.articleDAO.findAll().then((data) => {
             return HelperService.performResponse("200", "La liste des articles a été récupérés avec succès", data);
         });
     }
 
     async getById(id: string) : Promise<ResponseDTO<Article>> {
 
-        const foundArticle = await this.repository.findOne({ where : {_id : new ObjectId(id)}});
+        const foundArticle = await this.articleDAO.findById(id);
 
         // Si je trouve pas (si undefined ou null)
         if (!foundArticle){
@@ -37,15 +34,13 @@ export class ArticleService {
         // ==========================================================
         // Update
         // ==========================================================
-        if (article._id) {
-            let foundArticle = await this.repository.findOne({ where : {_id : article._id }});
+        if (article.id) {
+            let foundArticle = await this.articleDAO.findById(article.id);
 
             if (foundArticle){
 
                 // Est-ce que le titre existe deja sauf le miens
-                const foundArticleTitleList = await this.repository.find({ where : {title :  article.title}});
-
-                const foundArticleTitle = foundArticleTitleList.find((value) => value._id != article._id);
+                const foundArticleTitle = await this.articleDAO.findByTitleAndNotId(article.title, article.id)
 
                 if (foundArticleTitle) {
                     return HelperService.performResponse("701 ", "Impossible de modifier un article avec un titre déjà existant", article);
@@ -56,7 +51,7 @@ export class ArticleService {
                 foundArticle.content = article.content;
 
                 // attendre que le save se termine
-                await this.repository.save(foundArticle);
+                await this.articleDAO.save(foundArticle);
 
                 return HelperService.performResponse("200", "Article modifié avec succès", foundArticle);
             }
@@ -66,14 +61,14 @@ export class ArticleService {
         // Creation
         // ==========================================================
         // est-ce que le titre existe deja
-        const foundArticleTitle = await this.repository.findOne({ where : {title :  article.title}});
+        const foundArticleTitle = await this.articleDAO.findByTitle(article.title);
 
         if (foundArticleTitle) {
             return HelperService.performResponse("701 ", "Impossible d'ajouter un article avec un titre déjà existant", article);
         }
 
         // Success
-        await this.repository.save(article);
+        await this.articleDAO.save(article);
 
         return HelperService.performResponse("200", "Article ajouté avec succès", article);
     }
@@ -81,7 +76,8 @@ export class ArticleService {
     async deleteById(id: string) : Promise<ResponseDTO<Article>> {
         
         // Essayer de trovuer l'index d'un tableau selon un critère de recherche
-        const foundArticle = await this.repository.findOne({ where : {_id : new ObjectId(id)}});
+        
+        const foundArticle = await this.articleDAO.findById(id);
 
         // Si je trouve pas (si undefined ou null)
         if (!foundArticle){
@@ -89,7 +85,7 @@ export class ArticleService {
         }
 
         // Stocker en mémoire avant suppression et supprimer l'article
-        await this.repository.delete(foundArticle);
+        await this.articleDAO.delete(foundArticle.id);
     
         return HelperService.performResponse("200", `L'article ${id} a été supprimé avec succès`, foundArticle);
     }

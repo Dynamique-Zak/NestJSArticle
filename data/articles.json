@@ -1,0 +1,18 @@
+[
+    {
+      "id": "1",
+      "title": "Introduction to NestJS",
+      "content": "NestJS is a progressive Node.js framework for building efficient, reliable, and scalable server-side applications."
+    },
+    {
+      "id": "2",
+      "title": "Understanding Dependency Injection",
+      "content": "Dependency injection is a design pattern used to implement IoC (Inversion of Control) in applications."
+    },
+    {
+      "id": "3",
+      "title": "Building REST APIs with NestJS",
+      "content": "NestJS provides robust tools to easily create RESTful APIs."
+    }
+  ]
+  

@@ -3,21 +3,16 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ArticleModule } from './article/article.module';
 import { CoreModule } from './core/core.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { Article } from './article/article.dto';
+import { DatabaseModule } from './database/database.module';
 
 @Module({
-  imports: [ArticleModule, CoreModule, 
-    TypeOrmModule.forRoot({
-      type: 'mongodb',
-      url: 'mongodb://127.0.0.1:27017/db_tp',
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      synchronize: true,
-      entities : [Article],
-    })
+  imports: [
+    DatabaseModule,
+    CoreModule,
+    ArticleModule.register(true),
+    DatabaseModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }
