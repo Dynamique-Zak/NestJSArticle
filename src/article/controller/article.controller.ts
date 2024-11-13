@@ -13,11 +13,8 @@ export class ArticleController {
     }
 
     @Get(":id")
-    getById(@Param('id') id : String) {
-
-        const idArticle = Number(id);
-
-        return this.articleService.getById(idArticle);
+    getById(@Param('id') id : string) {
+        return this.articleService.getById(id);
     }
 
     @Post()
@@ -26,11 +23,8 @@ export class ArticleController {
     }
     
     @Delete(":id")
-    deleteById(@Param('id') id : String) {
-
-        const idArticle = Number(id);
-
-        return this.articleService.deleteById(idArticle);
+    deleteById(@Param('id') id : string) {
+        return this.articleService.deleteById(id);
     }
 
 }
