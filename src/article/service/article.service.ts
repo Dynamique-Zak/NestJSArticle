@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { ResponseDTO } from 'src/core/response.dto';
+import { ResponseDTO } from '../../core/response.dto';
 import { Article } from '../article.dto';
-import { HelperService } from 'src/core/helper-service';
-import { Not, Repository } from 'typeorm';
+import { HelperService } from '../../core/helper-service';
+import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ObjectId } from 'mongodb';
 
@@ -14,9 +14,7 @@ export class ArticleService {
         private readonly repository : Repository<Article> 
     ) {}
 
-    // Articles en mémoire
     getAll() : Promise<ResponseDTO<Article[]>> {
-
         return this.repository.find().then((data) => {
             return HelperService.performResponse("200", "La liste des articles a été récupérés avec succès", data);
         });
