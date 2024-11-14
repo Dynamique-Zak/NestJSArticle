@@ -1,6 +1,7 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { ArticleService } from '../service/article.service';
 import { Article } from '../article.dto';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('article')
 export class ArticleController {
@@ -9,6 +10,12 @@ export class ArticleController {
 
     @Get()
     getAll() {
+        return this.articleService.getAll();
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get("all-secu")
+    getAllSecure() {
         return this.articleService.getAll();
     }
 

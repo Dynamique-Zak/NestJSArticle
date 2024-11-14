@@ -18,7 +18,7 @@ export class AuthService {
         // Si couple email / password correcte -> token generé donc connecté
         if (payload.email == "francis@gmail.com" && payload.password == "123456") {
 
-            const token = this.jwtService.sign({ email : "teletubies@gmail.com"});
+            const token = this.jwtService.sign({ email : "teletubies@gmail.com", });
 
             return HelperService.performResponse("206", "Authentifié(e) avec succès !", token);
         }
