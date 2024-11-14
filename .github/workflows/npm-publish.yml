@@ -33,7 +33,7 @@ jobs:
         with:
           host: 161.35.39.34
           username: root
-          password: cHocolati31ne
+          password: Chocolatine31
           source: "*"
           target: /home/nestjs/
 
@@ -42,5 +42,5 @@ jobs:
         with:
           host: 161.35.39.34
           username: root
-          password: cHocolati31ne
+          password: Chocolatine31
           script: systemctl restart my_app.service
